@@ -58,6 +58,7 @@ export const serve = async (req: Request, res: Response) => {
   res.setHeader("Cache-Control", "public, max-age=3600");
   const stream = fs.createReadStream(resolved);
   stream.pipe(res);
+  return;
 };
 
 export const remove = async (req: Request, res: Response) => {

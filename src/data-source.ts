@@ -1,15 +1,15 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
-import { User } from "./entities/user.entities";
+// import { User } from "./entities/user.entities";
 
 dotenv.config();
 
-function requireEnv(key: string, fallback?: string): string {
-    const val = process.env[key] ?? fallback;
-    if (val === undefined) throw new Error(`Environment variable ${key} is required`);
-    return val;
-}
+// function requireEnv(key: string, fallback?: string): string {
+//     const val = process.env[key] ?? fallback;
+//     if (val === undefined) throw new Error(`Environment variable ${key} is required`);
+//     return val;
+// }
 
 export const AppDataSource = new DataSource({
     type: "postgres",

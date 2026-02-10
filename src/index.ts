@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import express from 'express';
 import { AppDataSource } from './data-source';
-import { User } from './entities/user.entities';
+// import { User } from './entities/user.entities';
 import authRoutes from './routes/auth.routes';
 import photoRoutes from './routes/photo.routes';
 import projectRoutes from './routes/project.routes';

@@ -14,7 +14,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     const user = await AppDataSource.getRepository(User).findOne({ where: { id: payload.sub }, select: ["id", "email", "firstName", "lastName", "role"] });
     if (!user) return res.status(401).json({ message: "Invalid token" });
     (req as any).user = user;
-    next();
+    return next();
   } catch (err) {
     return res.status(401).json({ message: "Invalid token" });
   }
