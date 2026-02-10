@@ -3,12 +3,14 @@ import express from 'express';
 import { AppDataSource } from './data-source';
 import { User } from './entities/user.entities';
 import authRoutes from './routes/auth.routes';
+import photoRoutes from './routes/photo.routes';
 
 const app = express();
 app.use(express.json());
 
 // routes for server
 app.use('/api/auth', authRoutes);
+app.use('/api/photos', photoRoutes);
 
 
 AppDataSource.initialize().then(async () => {
