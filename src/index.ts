@@ -6,12 +6,12 @@ import authRoutes from './routes/auth.routes';
 import photoRoutes from './routes/photo.routes';
 import projectRoutes from './routes/project.routes';
 import './utils/cron';
+const port = process.env.PORT || 3000;
 
 const app = express();
 app.use(express.json());
 
-// ... rest remains same but make sure port logic is there
-const port = process.env.PORT || 3000;
+
 app.use('/api/auth', authRoutes);
 app.use('/api/photos', photoRoutes);
 app.use('/api/projects', projectRoutes);
