@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import PhotoService from "../services/photo.service";
 import { AppDataSource } from "../data-source";
-import Photo from "../entities/photo.entity";
+import { Photo } from "../entities/photo.entity";
 import type { Photo as PhotoType } from "../entities/photo.entity";
 import path from "path";
 import fs from "fs";
