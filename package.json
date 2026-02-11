@@ -9,7 +9,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec tsx src/index.ts",
     "build": "tsc",
-    "start": "npm run build && node dist/index.js"
+    "start": "SET NODE_ENV=production && npm run build && node dist/index.js",
+    "typeorm": "typeorm-ts-node-commonjs -d src/data-source.ts",
+    "migration:generate": "npm run typeorm migration:generate --",
+    "migration:run": "npm run typeorm migration:run",
+    "migration:revert": "npm run typeorm migration:revert"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
