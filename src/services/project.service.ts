@@ -73,13 +73,23 @@ export class ProjectService {
 
   static async list(page = 1, limit = 10) {
     const [data, total] = await projectRepo().findAndCount({
+      relations: ["photos"],
       order: { createdAt: "DESC" },
       skip: (page - 1) * limit,
       take: limit,
     });
 
+    // Map photo URLs for each project
+    const dataWithUrls = data.map(project => ({
+      ...project,
+      photos: project.photos.map(p => ({
+        ...p,
+        url: `/api/photos/${p.id}`
+      }))
+    }));
+
     return {
-      data,
+      data: dataWithUrls,
       total,
       page,
       limit,

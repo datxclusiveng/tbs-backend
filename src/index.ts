@@ -28,8 +28,9 @@ AppDataSource.initialize().then(async () => {
 });
 
 // Error-handling middleware: catch body-parser/raw-body and multer errors
-app.use((err: any, _req: express.Request, res: express.Response) => {
+app.use((err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error(err);
+    void next;
 
     // Multer file upload errors
     if (err instanceof MulterError) {
