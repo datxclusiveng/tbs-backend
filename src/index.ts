@@ -1,5 +1,6 @@
 import 'reflect-metadata'
 import express from 'express';
+import { MulterError } from 'multer';
 import { AppDataSource } from './data-source';
 // import { User } from './entities/user.entities';
 import authRoutes from './routes/auth.routes';
@@ -9,7 +10,7 @@ import './utils/cron';
 const port = process.env.PORT || 3000;
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '20mb' }));
 
 
 app.use('/api/auth', authRoutes);
@@ -24,4 +25,24 @@ AppDataSource.initialize().then(async () => {
     });
 }).catch((err) => {
     console.error("Error connecting to the database:", err);
+});
+
+// Error-handling middleware: catch body-parser/raw-body and multer errors
+app.use((err: any, _req: express.Request, res: express.Response) => {
+    console.error(err);
+
+    // Multer file upload errors
+    if (err instanceof MulterError) {
+        return res.status(400).json({ error: 'File upload error', message: err.message });
+    }
+
+    // Payload too large from raw-body/body-parser
+    if (err && (err.type === 'entity.too.large' || err.status === 413)) {
+        return res.status(413).json({ error: 'Payload Too Large', message: 'Request entity too large' });
+    }
+
+    // Fallback
+    const status = err && err.status ? err.status : 500;
+    const message = err && err.message ? err.message : 'Internal Server Error';
+    return res.status(status).json({ error: message });
 });
