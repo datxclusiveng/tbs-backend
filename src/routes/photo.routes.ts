@@ -33,7 +33,7 @@ const router = Router();
 router.post("/", authenticate, upload.single("photo"), PhotoController.upload);
 // bulk upload: main gallery feature — require `groupName` in body and up to 20 files
 router.post("/bulk", authenticate, upload.array("photos", 20), PhotoController.bulkUpload);
-router.get("/", authenticate, PhotoController.list);
+router.get("/", PhotoController.list);
 router.get("/groups", PhotoController.listGroups);
 router.get("/groups/:groupId", PhotoController.listByGroup);
 router.get("/:id", PhotoController.serve);
