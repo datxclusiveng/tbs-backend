@@ -11,7 +11,11 @@ export class PhotoService {
     return path.resolve(process.cwd(), "uploads");
   }
 
-  static async saveFile(file: Express.Multer.File, uploaderId?: string, groupName?: string): Promise<Photo> {
+  static async saveFile(
+    file: Express.Multer.File,
+    uploaderId?: string,
+    groupName?: string,
+  ): Promise<Photo> {
     const data: Partial<Photo> = {
       filename: file.filename,
       originalName: file.originalname,
@@ -26,7 +30,11 @@ export class PhotoService {
     return photo;
   }
 
-  static async saveFiles(files: Express.Multer.File[], uploaderId?: string, groupName?: string) {
+  static async saveFiles(
+    files: Express.Multer.File[],
+    uploaderId?: string,
+    groupName?: string,
+  ) {
     if (!files || files.length === 0) return [];
     const saved: any[] = [];
     await AppDataSource.manager.transaction(async (manager) => {
@@ -53,7 +61,7 @@ export class PhotoService {
     if (!photo) return null;
     return {
       path: path.join(PhotoService.uploadsDir(), photo.filename),
-      photo
+      photo,
     };
   }
 
@@ -80,10 +88,19 @@ export class PhotoService {
     return { data, total };
   }
 
+  static async listAll(page = 1, limit = 20) {
+    const [data, total] = await repo().findAndCount({
+      order: { createdAt: "DESC" },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return { data, total };
+  }
+
   static async listByGroupId(photoId: string, page = 1, limit = 20) {
     const photo = await repo().findOneBy({ id: photoId });
     if (!photo) return { data: [], total: 0 };
-    
+
     // Find all photos sharing the same groupName
     const [data, total] = await repo().findAndCount({
       where: { groupName: photo.groupName || IsNull() },
@@ -100,7 +117,10 @@ export class PhotoService {
     // and take the first element (most recent) as the representative id.
     const query = repo()
       .createQueryBuilder("photo")
-      .select("(array_agg(photo.id ORDER BY photo.created_at DESC))[1]", "groupId")
+      .select(
+        "(array_agg(photo.id ORDER BY photo.created_at DESC))[1]",
+        "groupId",
+      )
       .addSelect("photo.groupName", "groupName")
       .where("photo.groupName IS NOT NULL")
       .groupBy("photo.groupName")
@@ -109,7 +129,7 @@ export class PhotoService {
       .limit(limit);
 
     const data = await query.getRawMany();
-    
+
     // For total unique groups count
     const totalResult = await repo()
       .createQueryBuilder("photo")
@@ -118,7 +138,10 @@ export class PhotoService {
       .getRawOne();
 
     return {
-      data: data.map((g: any) => ({ groupId: g.groupid || g.groupId, groupName: g.groupname || g.groupName })),
+      data: data.map((g: any) => ({
+        groupId: g.groupid || g.groupId,
+        groupName: g.groupname || g.groupName,
+      })),
       total: parseInt(totalResult.count),
     };
   }
