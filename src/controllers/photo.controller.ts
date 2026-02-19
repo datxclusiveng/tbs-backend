@@ -88,11 +88,9 @@ export const bulkUpload = async (req: Request, res: Response) => {
   if (!files || files.length === 0)
     return res.status(400).json({ message: "No files uploaded" });
   const groupName =
-    typeof req.body.groupName === "string" ? req.body.groupName : undefined;
-  if (!groupName)
-    return res
-      .status(400)
-      .json({ message: "groupName is required for bulk uploads" });
+    typeof req.body.groupName === "string"
+      ? req.body.groupName
+      : "General Gallery";
   const uploaderId = (req as any).user?.id;
   const photos: PhotoType[] = await PhotoService.saveFiles(
     files,
